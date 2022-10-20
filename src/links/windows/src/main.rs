@@ -1,7 +1,6 @@
 #![windows_subsystem = "windows"]
 // above declaration keeps the window hidden
 
-mod nonstd;
 mod stdlib;
 mod evasion;
 

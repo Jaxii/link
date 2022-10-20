@@ -1,5 +1,4 @@
 pub mod stdlib;
-pub mod nonstd;
 pub mod evasion;
 
 #[no_mangle]
